@@ -1,4 +1,6 @@
-import {MetricsPanelCtrl} from "app/plugins/sdk";
+import {
+	MetricsPanelCtrl
+} from "app/plugins/sdk";
 import _ from "lodash";
 import TimeSeries from "app/core/time_series2";
 import coreModule from "app/core/core_module";
@@ -69,7 +71,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	addFilters() {
 		coreModule.filter('numberOrText', () => {
 			let numberOrTextFilter = (input) => {
-				if(angular.isNumber(input)) {
+				if (angular.isNumber(input)) {
 					return this.filter('number')(input);
 				} else {
 					return input;
@@ -82,10 +84,10 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 		coreModule.filter('numberOrTextWithRegex', () => {
 			let numberOrTextFilter = (input, textRegex) => {
-				if(angular.isNumber(input)) {
+				if (angular.isNumber(input)) {
 					return this.filter('number')(input);
 				} else {
-					if(textRegex == null || textRegex.length == 0) {
+					if (textRegex == null || textRegex.length == 0) {
 						return input;
 					} else {
 						let regex;
@@ -141,7 +143,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	onInitEditMode() {
-		this.addEditorTab('Options', 'public/plugins/vonage-status-panel/editor.html', 2);
+		this.addEditorTab('Options', 'public/plugins/birkenstock-status-panel/editor.html', 2);
 		// Load in the supported units-of-measure formats so they can be displayed in the editor
 		this.unitFormats = kbn.getUnitFormats();
 	}
@@ -154,7 +156,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	fixPanelHeader() {
 		// Handle the panel top menu height, since it's display doesn't look good with the panel
 		let panelHeaderHeight = '';
-		if(this.panel.title.length === 0) {
+		if (this.panel.title.length === 0) {
 			panelHeaderHeight = '10px';
 		}
 		this.$panelContainer.find('.panel-header').css('height', panelHeaderHeight);
@@ -165,7 +167,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	setElementHeight() {
 		// Handle the panel height
 		this.$panelContainer.find('.status-panel').css('min-height', this.$panelContoller.height + 'px');
-		this.minHeight = this.$panelContoller.height-10;
+		this.minHeight = this.$panelContoller.height - 10;
 	}
 
 	setTextMaxWidth() {
@@ -178,7 +180,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	isAutoScrollAlerts() {
-		if(!this.panel.isAutoScrollOnOverflow) {
+		if (!this.panel.isAutoScrollOnOverflow) {
 			return false;
 		}
 
@@ -196,7 +198,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			if (typeof measurement.crit != "undefined") measurement.crit = String(measurement.crit);
 			if (typeof measurement.warn != "undefined") measurement.warn = String(measurement.warn);
 		} else if (measurement.valueHandler === "Date Threshold") {
-			let c = new Date(measurement.crit), w = new Date(measurement.warn);
+			let c = new Date(measurement.crit),
+				w = new Date(measurement.warn);
 			measurement.crit = (isNaN(c.getTime())) ? undefined : c;
 			measurement.warn = (isNaN(w.getTime())) ? undefined : w;
 		}
@@ -219,12 +222,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		if (this.panel.clusterName) {
 			this.panel.displayName =
 				this.filter('interpolateTemplateVars')(this.panel.clusterName, this.$scope)
-					.replace(new RegExp(this.panel.namePrefix, 'i'), '');
+				.replace(new RegExp(this.panel.namePrefix, 'i'), '');
 		} else {
 			this.panel.displayName = "";
 		}
 
-		if(this.panel.flipCard){
+		if (this.panel.flipCard) {
 			this.$panelContainer.addClass("effect-hover");
 		} else {
 			this.$panelContainer.removeClass("effect-hover");
@@ -254,18 +257,22 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			s.displayType = target.displayType;
 			s.valueDisplayRegex = "";
 
-			if(this.validateRegex(target.valueDisplayRegex)) {
+			if (this.validateRegex(target.valueDisplayRegex)) {
 				s.valueDisplayRegex = target.valueDisplayRegex;
 			}
 
 			let value;
 			switch (target.aggregation) {
 				case 'Max':
-					value = _.max(s.datapoints, (point) => { return point[0]; })[0];
+					value = _.max(s.datapoints, (point) => {
+						return point[0];
+					})[0];
 					value = s.stats.max;
 					break;
 				case 'Min':
-					value = _.min(s.datapoints, (point) => { return point[0]; })[0];
+					value = _.min(s.datapoints, (point) => {
+						return point[0];
+					})[0];
 					value = s.stats.min;
 					break;
 				case 'Delta':
@@ -274,7 +281,9 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 					break;
 				case 'Sum':
 					value = 0;
-					_.each(s.datapoints, (point) => { value += point[0] });
+					_.each(s.datapoints, (point) => {
+						value += point[0]
+					});
 					value = s.stats.total;
 					break;
 				case 'Avg':
@@ -293,16 +302,14 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 				target.valueHandler == "String Threshold" ||
 				target.valueHandler == "Date Threshold") {
 				this.handleThresholdStatus(s, target);
-			}
-			else if (target.valueHandler == "Disable Criteria") {
-				this.handleDisabledStatus(s,target);
-			}
-			else if (target.valueHandler == "Text Only") {
+			} else if (target.valueHandler == "Disable Criteria") {
+				this.handleDisabledStatus(s, target);
+			} else if (target.valueHandler == "Text Only") {
 				this.handleTextOnly(s, target);
 			}
 		});
 
-		if(this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
+		if (this.panel.isHideAlertsOnDisable && this.disabled.length > 0) {
 			this.crit = [];
 			this.warn = [];
 			this.display = [];
@@ -322,8 +329,8 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 
 		//Handle legacy code
 		_.each(targets, (target) => {
-			if(target.valueHandler == null) {
-				if(target.displayType != null) {
+			if (target.valueHandler == null) {
+				if (target.displayType != null) {
 					target.valueHandler = target.displayType;
 					if (target.valueHandler == "Annotation") {
 						target.valueHandler = "Text Only"
@@ -334,7 +341,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 				target.displayType = this.displayTypes[0];
 			}
 
-			if(target.display != null){
+			if (target.display != null) {
 				target.displayAliasType = target.display ? "Always" : this.displayAliasTypes[0];
 				target.displayValueWithAlias = target.display ? 'When Alias Displayed' : this.displayValueTypes[0];
 				delete target.display;
@@ -396,19 +403,19 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		let displayValueFromWarning = 'Warning / Critical' === target.displayValueWithAlias;
 		let displayValueFromCritical = 'Critical Only' === target.displayValueWithAlias;
 
-		if(isCritical) {
+		if (isCritical) {
 			//In critical state we don't show the error as annotation
 			series.displayType = this.displayTypes[0];
 			series.isDisplayValue = displayValueWhenAliasDisplayed || displayValueFromWarning || displayValueFromCritical;
 			this.crit.push(series);
-		} else if(isWarning) {
+		} else if (isWarning) {
 			//In warning state we don't show the warning as annotation
 			series.displayType = this.displayTypes[0];
 			series.isDisplayValue = displayValueWhenAliasDisplayed || displayValueFromWarning;
 			this.warn.push(series);
 		} else if ("Always" == target.displayAliasType) {
 			series.isDisplayValue = displayValueWhenAliasDisplayed;
-			if(series.displayType == "Annotation") {
+			if (series.displayType == "Annotation") {
 				this.annotation.push(series);
 			} else {
 				this.display.push(series);
@@ -444,14 +451,17 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	decimalPlaces(num) {
-		var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
-		if (!match) { return 0; }
+		var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+		if (!match) {
+			return 0;
+		}
 		return Math.max(
 			0,
 			// Number of digits right of decimal point.
 			(match[1] ? match[1].length : 0)
 			// Adjust for scientific notation.
-			- (match[2] ? +match[2] : 0));
+			-
+			(match[2] ? +match[2] : 0));
 	}
 
 	handleDisabledStatus(series, target) {
@@ -464,7 +474,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	handleTextOnly(series, target) {
-		if(series.displayType == "Annotation") {
+		if (series.displayType == "Annotation") {
 			this.annotation.push(series);
 		} else {
 			this.display.push(series);
@@ -472,7 +482,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	updatePanelState() {
-		if(this.duplicates) {
+		if (this.duplicates) {
 			this.panelState = 'error-state';
 		} else if (this.disabled.length > 0) {
 			this.panelState = 'disabled-state';
@@ -480,10 +490,12 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			this.panelState = 'error-state';
 		} else if (this.warn.length > 0) {
 			this.panelState = 'warn-state';
-		} else if((this.series == undefined || this.series.length == 0) && this.panel.isGrayOnNoData) {
-			this.panelState = 'no-data-state';
 		} else {
 			this.panelState = 'ok-state';
+		}
+
+		if ((this.series == undefined || this.series.length < this.panel.targets.length) && this.panel.isGrayOnNoData) {
+			this.panelState = 'no-data-state';
 		}
 	}
 
@@ -497,12 +509,22 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 		let okColor = (this.panel.isIgnoreOKColors) ? '' : this.panel.colors.ok;
 
 		if (this.panel.colorMode === "Panel") {
-			switch(this.panelState) {
-				case 'disabled-state': this.$panelContainer.css('background-color', this.panel.colors.disable); break;
-				case 'error-state': this.$panelContainer.css('background-color', this.panel.colors.crit); break;
-				case 'warn-state': this.$panelContainer.css('background-color', this.panel.colors.warn); break;
-				case 'no-data-state': this.$panelContainer.css('background-color', this.panel.colors.disable); break;
-				default: this.$panelContainer.css('background-color', okColor); break;
+			switch (this.panelState) {
+				case 'disabled-state':
+					this.$panelContainer.css('background-color', this.panel.colors.disable);
+					break;
+				case 'error-state':
+					this.$panelContainer.css('background-color', this.panel.colors.crit);
+					break;
+				case 'warn-state':
+					this.$panelContainer.css('background-color', this.panel.colors.warn);
+					break;
+				case 'no-data-state':
+					this.$panelContainer.css('background-color', this.panel.colors.disable);
+					break;
+				default:
+					this.$panelContainer.css('background-color', okColor);
+					break;
 			}
 		} else {
 			this.$panelContainer.css('background-color', '');
@@ -510,18 +532,18 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	handleMaxAlertsToShow() {
-		if(this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
+		if (this.panel.maxAlertNumber != null && this.panel.maxAlertNumber >= 0) {
 			let currentMaxAllowedAlerts = this.panel.maxAlertNumber;
 			let filteredOutAlerts = 0;
 			let arrayNamesToSlice = ["disabled", "crit", "warn", "display"];
-			arrayNamesToSlice.forEach( arrayName => {
+			arrayNamesToSlice.forEach(arrayName => {
 				let originAlertCount = this[arrayName].length;
-				this[arrayName] = this[arrayName].slice(0,currentMaxAllowedAlerts);
+				this[arrayName] = this[arrayName].slice(0, currentMaxAllowedAlerts);
 				currentMaxAllowedAlerts = Math.max(currentMaxAllowedAlerts - this[arrayName].length, 0);
 				filteredOutAlerts += (originAlertCount - this[arrayName].length);
 			});
 
-			if(filteredOutAlerts > 0) {
+			if (filteredOutAlerts > 0) {
 				this.extraMoreAlerts = "+ " + filteredOutAlerts + " more"
 			}
 		}
@@ -538,7 +560,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 			}
 
 			if (link.params) {
-				this.uri +=  "?" + link.params;
+				this.uri += "?" + link.params;
 			}
 
 			this.targetBlank = link.targetBlank;
@@ -548,13 +570,13 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	validateRegex(textRegex) {
-		if(textRegex == null || textRegex.length == 0) {
+		if (textRegex == null || textRegex.length == 0) {
 			return true
 		}
 		try {
 			let regex = new RegExp(textRegex);
 			return true
-		} catch(e) {
+		} catch (e) {
 			return false
 		}
 	}
@@ -617,7 +639,7 @@ export class StatusPluginCtrl extends MetricsPanelCtrl {
 	}
 
 	$onDestroy() {
-		if(this.timeoutId) clearInterval(this.timeoutId);
+		if (this.timeoutId) clearInterval(this.timeoutId);
 	}
 
 	autoFlip() {

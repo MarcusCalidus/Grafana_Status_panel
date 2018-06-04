@@ -1,7 +1,7 @@
 {
   "type": "panel",
-  "name": "Status Panel",
-  "id": "vonage-status-panel",
+  "name": "Status Panel BS",
+  "id": "birkenstock-status-panel",
 
   "info": {
     "description": "Status Panel for Grafana",
@@ -15,7 +15,7 @@
       "large": "img/icon_status_panel.svg"
     },
     "links": [
-      {"name": "Github", "url": "https://github.com/Vonage/Grafana_Status_panel"}
+      {"name": "Github", "url": "https://github.com/MarcusCalidus/Grafana_Status_panel"}
     ],
     "screenshots": [
       {"name": "Environment Snapshot", "path": "img/environment_snapshot.png"},

@@ -1,5 +1,5 @@
 {
-  "name": "vonage-status-panel",
+  "name": "birkenstock-status-panel",
   "private": true,
   "version": "1.0.8",
   "description": "",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Vonage/Grafana_Status_panel.git"
+    "url": "git+https://github.com/MarcusCalidus/Grafana_Status_panel.git"
   },
   "author": "",
   "license": "ISC",

@@ -215,7 +215,7 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 				}, {
 					key: "onInitEditMode",
 					value: function onInitEditMode() {
-						this.addEditorTab('Options', 'public/plugins/vonage-status-panel/editor.html', 2);
+						this.addEditorTab('Options', 'public/plugins/birkenstock-status-panel/editor.html', 2);
 						// Load in the supported units-of-measure formats so they can be displayed in the editor
 						this.unitFormats = kbn.getUnitFormats();
 					}
@@ -574,10 +574,12 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 							this.panelState = 'error-state';
 						} else if (this.warn.length > 0) {
 							this.panelState = 'warn-state';
-						} else if ((this.series == undefined || this.series.length == 0) && this.panel.isGrayOnNoData) {
-							this.panelState = 'no-data-state';
 						} else {
 							this.panelState = 'ok-state';
+						}
+
+						if ((this.series == undefined || this.series.length < this.panel.targets.length) && this.panel.isGrayOnNoData) {
+							this.panelState = 'no-data-state';
 						}
 					}
 				}, {
@@ -594,15 +596,20 @@ System.register(["app/plugins/sdk", "lodash", "app/core/time_series2", "app/core
 						if (this.panel.colorMode === "Panel") {
 							switch (this.panelState) {
 								case 'disabled-state':
-									this.$panelContainer.css('background-color', this.panel.colors.disable);break;
+									this.$panelContainer.css('background-color', this.panel.colors.disable);
+									break;
 								case 'error-state':
-									this.$panelContainer.css('background-color', this.panel.colors.crit);break;
+									this.$panelContainer.css('background-color', this.panel.colors.crit);
+									break;
 								case 'warn-state':
-									this.$panelContainer.css('background-color', this.panel.colors.warn);break;
+									this.$panelContainer.css('background-color', this.panel.colors.warn);
+									break;
 								case 'no-data-state':
-									this.$panelContainer.css('background-color', this.panel.colors.disable);break;
+									this.$panelContainer.css('background-color', this.panel.colors.disable);
+									break;
 								default:
-									this.$panelContainer.css('background-color', okColor);break;
+									this.$panelContainer.css('background-color', okColor);
+									break;
 							}
 						} else {
 							this.$panelContainer.css('background-color', '');
